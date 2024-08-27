@@ -1,0 +1,25 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "KuhbrilleCamera",
+	"Description": "Adds a Camera that will render the world the way a cow would perceive it.",
+	"Category": "",
+	"CreatedBy": "Lasse Foster",
+	"CreatedByURL": "",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": false,
+	"IsBetaVersion": false,
+	"Installed": false,
+	"Modules": [
+	{
+		"Name": "KuhbrilleCamera",
+		"Type": "Runtime",
+		"LoadingPhase": "Default"
+	}],
+	"Plugins": [
+	]
+}
+
