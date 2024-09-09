@@ -1,6 +1,7 @@
 #include "KuhbrilleManager.h"
 
 #include "Camera/CameraActor.h"
+#include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SceneCaptureComponentCube.h"
 #include "Engine/TextureRenderTargetCube.h"
@@ -11,6 +12,18 @@ AKuhbrilleManager::AKuhbrilleManager()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	static ConstructorHelpers::FObjectFinder<UMaterial> MaterialFinder(TEXT("/KuhbrilleCamera/KuhbrilleOverlay.KuhbrilleOverlay"));
+	if (MaterialFinder.Succeeded())
+	{
+		KuhbrilleOverlayMaterial = MaterialFinder.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UTextureRenderTargetCube> LowResCubeFinder(TEXT("/KuhbrilleCamera/KuhbrilleLowRes.KuhbrilleLowRes"));
+	if (LowResCubeFinder.Succeeded())
+	{
+		RenderTarget = LowResCubeFinder.Object;
+	}
 }
 
 // Called when the game starts or when spawned
@@ -22,6 +35,11 @@ void AKuhbrilleManager::BeginPlay()
 	auto rotation = FRotator(90, 0, 0);
 	CameraActor = GetWorld()->SpawnActor<ACameraActor>(location, rotation);
 
+	if (KuhbrilleOverlayMaterial->IsValidLowLevel())
+	{
+		CameraActor->GetCameraComponent()->PostProcessSettings.AddBlendable(KuhbrilleOverlayMaterial, 1.0f);
+	}
+
 	PlayerController = UGameplayStatics::GetPlayerController(this, 0);
 	PlayerController->SetViewTarget(CameraActor);
 
@@ -29,10 +47,6 @@ void AKuhbrilleManager::BeginPlay()
 
 	if (CaptureComponentCube)
 	{
-		RenderTarget = NewObject<UTextureRenderTargetCube>(this);
-		RenderTarget->bHDR = true;
-		RenderTarget->InitAutoFormat(RenderTargetSizeX);  // Set the resolution for the render target (e.g., 512x512)
-
 		auto playerRoot = PlayerController->GetPawn()->GetComponentByClass<UCapsuleComponent>();
 		CaptureComponentCube->SetupAttachment(playerRoot);
 		CaptureComponentCube->RegisterComponent();

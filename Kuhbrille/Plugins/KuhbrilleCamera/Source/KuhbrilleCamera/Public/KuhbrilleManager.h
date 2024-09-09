@@ -20,18 +20,21 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Config")
 	ACameraActor* CameraActor;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Config")
 	APlayerController* PlayerController;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Config")
 	USceneCaptureComponentCube* CaptureComponentCube;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Config")
 	int RenderTargetSizeX = 512;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Config")
 	UTextureRenderTargetCube* RenderTarget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Config")
+	UMaterial* KuhbrilleOverlayMaterial;
 };
