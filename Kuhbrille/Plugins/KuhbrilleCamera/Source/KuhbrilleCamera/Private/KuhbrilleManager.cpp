@@ -40,22 +40,9 @@ void AKuhbrilleManager::BeginPlay()
 {
 	Super::BeginPlay();
 
-
 	PlayerController = UGameplayStatics::GetPlayerController(this, 0);
 	auto Pawn = PlayerController->GetPawn();
-#define CREATE_NEW_DUMMY_CAMERA false
-#if CREATE_NEW_DUMMY_CAMERA
-	
-	auto location = FVector(0, 0, 1000);
-	auto rotation = FRotator(90, 0, 0);
-	Camera = GetWorld()->SpawnActor<ACameraActor>(location, rotation)->GetCameraComponent();
-	PlayerController->SetViewTarget(Camera->GetOwner());
-	
-#else
-
 	Camera = Pawn->GetComponentByClass<UCameraComponent>();
-
-#endif
 
 	FPostProcessSettings& pp = Camera->PostProcessSettings;
 
@@ -106,11 +93,11 @@ void AKuhbrilleManager::BeginPlay()
 	pp.LocalExposureShadowContrastScale = 1.0f;
 	pp.bOverride_LocalExposureShadowContrastScale = true;
 	pp.LocalExposureDetailStrength = 1.5;
-	pp.bOverride_LocalExposureDetailStrength = true;
+	//pp.bOverride_LocalExposureDetailStrength = true;
 	pp.LocalExposureBlurredLuminanceBlend = 1.0f;
-	pp.bOverride_LocalExposureBlurredLuminanceBlend = true;
+	//pp.bOverride_LocalExposureBlurredLuminanceBlend = true;
 	pp.LocalExposureBlurredLuminanceKernelSizePercent = 100.0f;
-	pp.bOverride_LocalExposureBlurredLuminanceKernelSizePercent = true;
+	//pp.bOverride_LocalExposureBlurredLuminanceKernelSizePercent = true;
 
 	pp.bOverride_ColorGradingLUT = true;
 	pp.ColorGradingLUT = RedGreenBlindLut;
