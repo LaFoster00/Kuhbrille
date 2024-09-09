@@ -34,11 +34,36 @@ void AKuhbrilleManager::BeginPlay()
 	auto location = FVector(0, 0, 1000);
 	auto rotation = FRotator(90, 0, 0);
 	CameraActor = GetWorld()->SpawnActor<ACameraActor>(location, rotation);
-
+	FPostProcessSettings &pp = CameraActor->GetCameraComponent()->PostProcessSettings;
+	
 	if (KuhbrilleOverlayMaterial->IsValidLowLevel())
 	{
-		CameraActor->GetCameraComponent()->PostProcessSettings.AddBlendable(KuhbrilleOverlayMaterial, 1.0f);
+		pp.AddBlendable(KuhbrilleOverlayMaterial, 1.0f);
 	}
+
+	pp.BloomMethod = BM_SOG;
+	pp.BloomIntensity = 8.0f;
+	pp.BloomThreshold = -0.935f;
+	pp.BloomSizeScale = 64.0f;
+	pp.Bloom1Size = 0.89f;
+	pp.Bloom2Size = 1.6f;
+	pp.Bloom3Size = 6.53f;
+
+	pp.AutoExposureMethod = AEM_Histogram;
+	pp.AutoExposureBias = 0.0f;
+	pp.AutoExposureMinBrightness = -10.0f;
+	pp.AutoExposureMaxBrightness = 20.0f;
+	pp.AutoExposureSpeedUp = 0.3f;
+	pp.AutoExposureSpeedDown = 0.3f;
+
+	pp.LocalExposureHighlightContrastScale = 1.0f;
+	pp.LocalExposureShadowContrastScale = 1.0f;
+	pp.LocalExposureDetailStrength = 1.5;
+	pp.LocalExposureBlurredLuminanceBlend = 1.0f;
+	pp.LocalExposureBlurredLuminanceKernelSizePercent = 100.0f;
+
+	pp.FilmToe = 0.8f;
+
 
 	PlayerController = UGameplayStatics::GetPlayerController(this, 0);
 	PlayerController->SetViewTarget(CameraActor);
