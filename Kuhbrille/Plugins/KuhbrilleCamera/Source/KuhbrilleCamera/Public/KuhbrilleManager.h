@@ -19,6 +19,10 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	virtual void Tick(float DeltaSeconds) override;
+
+	void ConstrainPawnCameraToZAxis();
+
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Config")
 	UCameraComponent* Camera;
@@ -37,4 +41,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Config")
 	UMaterial* KuhbrilleOverlayMaterial;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Config")
+	UTexture2D* RedGreenBlindLut;
 };

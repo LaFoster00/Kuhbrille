@@ -13,16 +13,25 @@ AKuhbrilleManager::AKuhbrilleManager()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	static ConstructorHelpers::FObjectFinder<UMaterial> MaterialFinder(TEXT("/KuhbrilleCamera/KuhbrilleOverlay.KuhbrilleOverlay"));
+	static ConstructorHelpers::FObjectFinder<UMaterial> MaterialFinder(
+		TEXT("/KuhbrilleCamera/KuhbrilleOverlay.KuhbrilleOverlay"));
 	if (MaterialFinder.Succeeded())
 	{
 		KuhbrilleOverlayMaterial = MaterialFinder.Object;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UTextureRenderTargetCube> LowResCubeFinder(TEXT("/KuhbrilleCamera/KuhbrilleLowRes.KuhbrilleLowRes"));
+	static ConstructorHelpers::FObjectFinder<UTextureRenderTargetCube> LowResCubeFinder(
+		TEXT("/KuhbrilleCamera/KuhbrilleLowRes.KuhbrilleLowRes"));
 	if (LowResCubeFinder.Succeeded())
 	{
 		RenderTarget = LowResCubeFinder.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UTexture2D> LutFinder(
+		TEXT("/KuhbrilleCamera/deuteranope_lut.deuteranope_lut"));
+	if (LutFinder.Succeeded())
+	{
+		RedGreenBlindLut = LutFinder.Object;
 	}
 }
 
@@ -31,7 +40,7 @@ void AKuhbrilleManager::BeginPlay()
 {
 	Super::BeginPlay();
 
-	
+
 	PlayerController = UGameplayStatics::GetPlayerController(this, 0);
 	auto Pawn = PlayerController->GetPawn();
 #define CREATE_NEW_DUMMY_CAMERA false
@@ -43,23 +52,27 @@ void AKuhbrilleManager::BeginPlay()
 	PlayerController->SetViewTarget(Camera->GetOwner());
 	
 #else
-	
+
 	Camera = Pawn->GetComponentByClass<UCameraComponent>();
-	
+
 #endif
 
-	FPostProcessSettings &pp = Camera->PostProcessSettings;
-	
+	FPostProcessSettings& pp = Camera->PostProcessSettings;
+
 	if (KuhbrilleOverlayMaterial->IsValidLowLevel())
 	{
 		pp.AddBlendable(KuhbrilleOverlayMaterial, 1.0f);
 	}
 
-	Camera->SetConstraintAspectRatio(true);
+	Camera->bUsePawnControlRotation = false;
+	Camera->SetConstraintAspectRatio(false);
+	Camera->SetFieldOfView(121.0f);
+	Camera->bOverrideAspectRatioAxisConstraint = true;
+	Camera->AspectRatioAxisConstraint = AspectRatio_MaintainYFOV;
 
 	pp.MotionBlurAmount = 0.f;
 	pp.bOverride_MotionBlurAmount = true;
-	
+
 	pp.BloomMethod = BM_SOG;
 	pp.bOverride_BloomMethod = true;
 	pp.BloomIntensity = 8.0f;
@@ -99,6 +112,9 @@ void AKuhbrilleManager::BeginPlay()
 	pp.LocalExposureBlurredLuminanceKernelSizePercent = 100.0f;
 	pp.bOverride_LocalExposureBlurredLuminanceKernelSizePercent = true;
 
+	pp.bOverride_ColorGradingLUT = true;
+	pp.ColorGradingLUT = RedGreenBlindLut;
+
 	pp.FilmToe = 0.8f;
 	pp.bOverride_FilmToe = true;
 
@@ -109,6 +125,7 @@ void AKuhbrilleManager::BeginPlay()
 		auto playerRoot = PlayerController->GetPawn()->GetComponentByClass<UCapsuleComponent>();
 		CaptureComponentCube->SetupAttachment(playerRoot);
 		CaptureComponentCube->RegisterComponent();
+		CaptureComponentCube->SetRelativeLocation(Camera->GetRelativeLocation());
 		CaptureComponentCube->bCaptureRotation = true;
 		CaptureComponentCube->bCaptureEveryFrame = true;
 		CaptureComponentCube->bUseRayTracingIfEnabled = true;
@@ -116,4 +133,18 @@ void AKuhbrilleManager::BeginPlay()
 		CaptureComponentCube->PrimitiveRenderMode = ESceneCapturePrimitiveRenderMode::PRM_RenderScenePrimitives;
 		CaptureComponentCube->CaptureSource = SCS_SceneColorSceneDepth;
 	}
+}
+
+void AKuhbrilleManager::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+	ConstrainPawnCameraToZAxis();
+}
+
+void AKuhbrilleManager::ConstrainPawnCameraToZAxis()
+{
+	FRotator CurrentRotation = PlayerController->GetPawn()->GetControlRotation();
+	CurrentRotation.Pitch = 0.0f;
+	CurrentRotation.Roll = 0.0f;
+	Camera->SetWorldRotation(CurrentRotation);
 }
