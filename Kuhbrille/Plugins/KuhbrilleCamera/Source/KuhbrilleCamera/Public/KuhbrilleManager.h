@@ -2,7 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include <Components/SceneCaptureComponent.h>
+#include "Camera/CameraComponent.h"
 
 #include "KuhbrilleManager.generated.h"
 
@@ -21,7 +21,7 @@ protected:
 
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Config")
-	ACameraActor* CameraActor;
+	UCameraComponent* Camera;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Config")
 	APlayerController* PlayerController;

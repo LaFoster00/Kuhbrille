@@ -31,42 +31,76 @@ void AKuhbrilleManager::BeginPlay()
 {
 	Super::BeginPlay();
 
+	
+	PlayerController = UGameplayStatics::GetPlayerController(this, 0);
+	auto Pawn = PlayerController->GetPawn();
+#define CREATE_NEW_DUMMY_CAMERA false
+#if CREATE_NEW_DUMMY_CAMERA
+	
 	auto location = FVector(0, 0, 1000);
 	auto rotation = FRotator(90, 0, 0);
-	CameraActor = GetWorld()->SpawnActor<ACameraActor>(location, rotation);
-	FPostProcessSettings &pp = CameraActor->GetCameraComponent()->PostProcessSettings;
+	Camera = GetWorld()->SpawnActor<ACameraActor>(location, rotation)->GetCameraComponent();
+	PlayerController->SetViewTarget(Camera->GetOwner());
+	
+#else
+	
+	Camera = Pawn->GetComponentByClass<UCameraComponent>();
+	
+#endif
+
+	FPostProcessSettings &pp = Camera->PostProcessSettings;
 	
 	if (KuhbrilleOverlayMaterial->IsValidLowLevel())
 	{
 		pp.AddBlendable(KuhbrilleOverlayMaterial, 1.0f);
 	}
 
+	Camera->SetConstraintAspectRatio(true);
+
+	pp.MotionBlurAmount = 0.f;
+	pp.bOverride_MotionBlurAmount = true;
+	
 	pp.BloomMethod = BM_SOG;
+	pp.bOverride_BloomMethod = true;
 	pp.BloomIntensity = 8.0f;
+	pp.bOverride_BloomIntensity = true;
 	pp.BloomThreshold = -0.935f;
+	pp.bOverride_BloomThreshold = true;
 	pp.BloomSizeScale = 64.0f;
+	pp.bOverride_BloomSizeScale = true;
 	pp.Bloom1Size = 0.89f;
+	pp.bOverride_Bloom1Size = true;
 	pp.Bloom2Size = 1.6f;
+	pp.bOverride_Bloom2Size = true;
 	pp.Bloom3Size = 6.53f;
+	pp.bOverride_Bloom3Size = true;
 
 	pp.AutoExposureMethod = AEM_Histogram;
+	pp.bOverride_AutoExposureMethod = true;
 	pp.AutoExposureBias = 0.0f;
+	pp.bOverride_AutoExposureBias = true;
 	pp.AutoExposureMinBrightness = -10.0f;
+	pp.bOverride_AutoExposureMinBrightness = true;
 	pp.AutoExposureMaxBrightness = 20.0f;
+	pp.bOverride_AutoExposureMaxBrightness = true;
 	pp.AutoExposureSpeedUp = 0.3f;
+	pp.bOverride_AutoExposureSpeedUp = true;
 	pp.AutoExposureSpeedDown = 0.3f;
+	pp.bOverride_AutoExposureSpeedDown = true;
 
 	pp.LocalExposureHighlightContrastScale = 1.0f;
+	pp.bOverride_LocalExposureHighlightContrastScale = true;
 	pp.LocalExposureShadowContrastScale = 1.0f;
+	pp.bOverride_LocalExposureShadowContrastScale = true;
 	pp.LocalExposureDetailStrength = 1.5;
+	pp.bOverride_LocalExposureDetailStrength = true;
 	pp.LocalExposureBlurredLuminanceBlend = 1.0f;
+	pp.bOverride_LocalExposureBlurredLuminanceBlend = true;
 	pp.LocalExposureBlurredLuminanceKernelSizePercent = 100.0f;
+	pp.bOverride_LocalExposureBlurredLuminanceKernelSizePercent = true;
 
 	pp.FilmToe = 0.8f;
-
-
-	PlayerController = UGameplayStatics::GetPlayerController(this, 0);
-	PlayerController->SetViewTarget(CameraActor);
+	pp.bOverride_FilmToe = true;
 
 	CaptureComponentCube = NewObject<USceneCaptureComponentCube>(this, USceneCaptureComponentCube::StaticClass());
 
