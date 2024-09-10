@@ -114,7 +114,7 @@ void AKuhbrilleManager::BeginPlay()
 		CaptureComponentCube->RegisterComponent();
 		CaptureComponentCube->SetRelativeLocation(Camera->GetRelativeLocation());
 		CaptureComponentCube->bCaptureRotation = true;
-		CaptureComponentCube->bCaptureEveryFrame = true;
+		CaptureComponentCube->bCaptureEveryFrame = !ManualCaptureUpdate;
 		CaptureComponentCube->bUseRayTracingIfEnabled = true;
 		CaptureComponentCube->TextureTarget = RenderTarget;
 		CaptureComponentCube->PrimitiveRenderMode = ESceneCapturePrimitiveRenderMode::PRM_RenderScenePrimitives;

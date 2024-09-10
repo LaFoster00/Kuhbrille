@@ -38,6 +38,9 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Config")
 	UTextureRenderTargetCube* RenderTarget;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Config")
+	bool ManualCaptureUpdate = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Config")
 	UMaterial* KuhbrilleOverlayMaterial;
