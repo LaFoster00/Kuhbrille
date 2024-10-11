@@ -33,6 +33,54 @@ AKuhbrilleManager::AKuhbrilleManager()
 	{
 		RedGreenBlindLut = LutFinder.Object;
 	}
+
+	PostProcessSettings.MotionBlurAmount = 0.f;
+	PostProcessSettings.bOverride_MotionBlurAmount = true;
+
+	PostProcessSettings.BloomMethod = BM_SOG;
+	PostProcessSettings.bOverride_BloomMethod = true;
+	PostProcessSettings.BloomIntensity = 8.0f;
+	PostProcessSettings.bOverride_BloomIntensity = true;
+	PostProcessSettings.BloomThreshold = -0.935f;
+	PostProcessSettings.bOverride_BloomThreshold = true;
+	PostProcessSettings.BloomSizeScale = 64.0f;
+	PostProcessSettings.bOverride_BloomSizeScale = true;
+	PostProcessSettings.Bloom1Size = 0.89f;
+	PostProcessSettings.bOverride_Bloom1Size = true;
+	PostProcessSettings.Bloom2Size = 1.6f;
+	PostProcessSettings.bOverride_Bloom2Size = true;
+	PostProcessSettings.Bloom3Size = 6.53f;
+	PostProcessSettings.bOverride_Bloom3Size = true;
+
+	PostProcessSettings.AutoExposureMethod = AEM_Histogram;
+	PostProcessSettings.bOverride_AutoExposureMethod = true;
+	PostProcessSettings.AutoExposureBias = 0.0f;
+	PostProcessSettings.bOverride_AutoExposureBias = true;
+	PostProcessSettings.AutoExposureMinBrightness = -10.0f;
+	PostProcessSettings.bOverride_AutoExposureMinBrightness = true;
+	PostProcessSettings.AutoExposureMaxBrightness = 20.0f;
+	PostProcessSettings.bOverride_AutoExposureMaxBrightness = true;
+	PostProcessSettings.AutoExposureSpeedUp = 0.3f;
+	PostProcessSettings.bOverride_AutoExposureSpeedUp = true;
+	PostProcessSettings.AutoExposureSpeedDown = 0.3f;
+	PostProcessSettings.bOverride_AutoExposureSpeedDown = true;
+
+	PostProcessSettings.LocalExposureHighlightContrastScale = 1.0f;
+	PostProcessSettings.bOverride_LocalExposureHighlightContrastScale = true;
+	PostProcessSettings.LocalExposureShadowContrastScale = 1.0f;
+	PostProcessSettings.bOverride_LocalExposureShadowContrastScale = true;
+	PostProcessSettings.LocalExposureDetailStrength = 1.5;
+	//PostProcessSettings.bOverride_LocalExposureDetailStrength = true;
+	PostProcessSettings.LocalExposureBlurredLuminanceBlend = 1.0f;
+	//PostProcessSettings.bOverride_LocalExposureBlurredLuminanceBlend = true;
+	PostProcessSettings.LocalExposureBlurredLuminanceKernelSizePercent = 100.0f;
+	//PostProcessSettings.bOverride_LocalExposureBlurredLuminanceKernelSizePercent = true;
+
+	PostProcessSettings.ColorGradingLUT = RedGreenBlindLut;
+	PostProcessSettings.bOverride_ColorGradingLUT = true;
+
+	PostProcessSettings.FilmToe = 0.8f;
+	PostProcessSettings.bOverride_FilmToe = true;
 }
 
 // Called when the game starts or when spawned
@@ -40,70 +88,18 @@ void AKuhbrilleManager::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (KuhbrilleOverlayMaterial->IsValidLowLevel())
+		PostProcessSettings.AddBlendable(KuhbrilleOverlayMaterial, 1);
+
 	PlayerController = UGameplayStatics::GetPlayerController(this, 0);
 	auto Pawn = PlayerController->GetPawn();
 	Camera = Pawn->GetComponentByClass<UCameraComponent>();
 
-	FPostProcessSettings& pp = Camera->PostProcessSettings;
-
-	if (KuhbrilleOverlayMaterial->IsValidLowLevel())
-	{
-		pp.AddBlendable(KuhbrilleOverlayMaterial, 1.0f);
-	}
-
-	Camera->bUsePawnControlRotation = false;
+	//Camera->bUsePawnControlRotation = false;
 	Camera->SetConstraintAspectRatio(false);
 	Camera->SetFieldOfView(121.0f);
 	Camera->bOverrideAspectRatioAxisConstraint = true;
 	Camera->AspectRatioAxisConstraint = AspectRatio_MaintainYFOV;
-
-	pp.MotionBlurAmount = 0.f;
-	pp.bOverride_MotionBlurAmount = true;
-
-	pp.BloomMethod = BM_SOG;
-	pp.bOverride_BloomMethod = true;
-	pp.BloomIntensity = 8.0f;
-	pp.bOverride_BloomIntensity = true;
-	pp.BloomThreshold = -0.935f;
-	pp.bOverride_BloomThreshold = true;
-	pp.BloomSizeScale = 64.0f;
-	pp.bOverride_BloomSizeScale = true;
-	pp.Bloom1Size = 0.89f;
-	pp.bOverride_Bloom1Size = true;
-	pp.Bloom2Size = 1.6f;
-	pp.bOverride_Bloom2Size = true;
-	pp.Bloom3Size = 6.53f;
-	pp.bOverride_Bloom3Size = true;
-
-	pp.AutoExposureMethod = AEM_Histogram;
-	pp.bOverride_AutoExposureMethod = true;
-	pp.AutoExposureBias = 0.0f;
-	pp.bOverride_AutoExposureBias = true;
-	pp.AutoExposureMinBrightness = -10.0f;
-	pp.bOverride_AutoExposureMinBrightness = true;
-	pp.AutoExposureMaxBrightness = 20.0f;
-	pp.bOverride_AutoExposureMaxBrightness = true;
-	pp.AutoExposureSpeedUp = 0.3f;
-	pp.bOverride_AutoExposureSpeedUp = true;
-	pp.AutoExposureSpeedDown = 0.3f;
-	pp.bOverride_AutoExposureSpeedDown = true;
-
-	pp.LocalExposureHighlightContrastScale = 1.0f;
-	pp.bOverride_LocalExposureHighlightContrastScale = true;
-	pp.LocalExposureShadowContrastScale = 1.0f;
-	pp.bOverride_LocalExposureShadowContrastScale = true;
-	pp.LocalExposureDetailStrength = 1.5;
-	//pp.bOverride_LocalExposureDetailStrength = true;
-	pp.LocalExposureBlurredLuminanceBlend = 1.0f;
-	//pp.bOverride_LocalExposureBlurredLuminanceBlend = true;
-	pp.LocalExposureBlurredLuminanceKernelSizePercent = 100.0f;
-	//pp.bOverride_LocalExposureBlurredLuminanceKernelSizePercent = true;
-
-	pp.bOverride_ColorGradingLUT = true;
-	pp.ColorGradingLUT = RedGreenBlindLut;
-
-	pp.FilmToe = 0.8f;
-	pp.bOverride_FilmToe = true;
 
 	CaptureComponentCube = NewObject<USceneCaptureComponentCube>(this, USceneCaptureComponentCube::StaticClass());
 
@@ -120,12 +116,17 @@ void AKuhbrilleManager::BeginPlay()
 		CaptureComponentCube->PrimitiveRenderMode = ESceneCapturePrimitiveRenderMode::PRM_RenderScenePrimitives;
 		CaptureComponentCube->CaptureSource = SCS_SceneColorSceneDepth;
 	}
+
+	PostProcessVolume = GetWorld()->SpawnActor<APostProcessVolume>();
+	PostProcessVolume->Settings = PostProcessSettings;
+	PostProcessVolume->bUnbound = true;
 }
 
 void AKuhbrilleManager::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-	ConstrainPawnCameraToZAxis();
+	if (ConstrainPawnCameraZAxis)
+		ConstrainPawnCameraToZAxis();
 }
 
 void AKuhbrilleManager::ConstrainPawnCameraToZAxis()
@@ -134,4 +135,22 @@ void AKuhbrilleManager::ConstrainPawnCameraToZAxis()
 	CurrentRotation.Pitch = 0.0f;
 	CurrentRotation.Roll = 0.0f;
 	Camera->SetWorldRotation(CurrentRotation);
+}
+
+void AKuhbrilleManager::EnableKuhbrille()
+{
+	SetKuhbrilleEnabled(true);
+}
+
+void AKuhbrilleManager::DisableKuhbrille()
+{
+	SetKuhbrilleEnabled(false);
+}
+
+void AKuhbrilleManager::SetKuhbrilleEnabled(bool Enabled)
+{
+	if (KuhbrilleEnabled == Enabled)
+		return;
+	KuhbrilleEnabled = Enabled;
+	PostProcessVolume->bEnabled = Enabled;
 }

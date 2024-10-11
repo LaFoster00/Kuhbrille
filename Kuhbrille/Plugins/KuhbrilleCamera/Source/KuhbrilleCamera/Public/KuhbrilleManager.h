@@ -20,10 +20,27 @@ protected:
 	virtual void BeginPlay() override;
 
 	virtual void Tick(float DeltaSeconds) override;
-
+	
 	void ConstrainPawnCameraToZAxis();
 
+private:
+	UFUNCTION(CallInEditor, Category="Config")
+	void EnableKuhbrille();
+
+	UFUNCTION(CallInEditor, Category="Config")
+	void DisableKuhbrille();
+	
 public:
+	UFUNCTION(BlueprintCallable, Category="Kuhbrille")
+	void SetKuhbrilleEnabled(bool Enabled);
+
+public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Config")
+	bool KuhbrilleEnabled = true;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Config")
+	bool ConstrainPawnCameraZAxis = true;
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Config")
 	UCameraComponent* Camera;
 
@@ -47,4 +64,10 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Config")
 	UTexture2D* RedGreenBlindLut;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Config")
+	APostProcessVolume* PostProcessVolume;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Config", meta=(ShowPostProcessCategories))
+	FPostProcessSettings PostProcessSettings;
 };
