@@ -6,6 +6,11 @@
 #include "Components/SceneCaptureComponentCube.h"
 #include "Engine/TextureRenderTargetCube.h"
 #include "Kismet/GameplayStatics.h"
+#include "UObject/ConstructorHelpers.h"
+#include "GameFramework/Pawn.h"
+#include "Components/CapsuleComponent.h"
+#include "Engine/World.h"
+
 
 // Sets default values
 AKuhbrilleManager::AKuhbrilleManager()

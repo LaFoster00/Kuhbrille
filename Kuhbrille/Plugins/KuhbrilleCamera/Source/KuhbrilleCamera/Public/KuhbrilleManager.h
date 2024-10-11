@@ -3,6 +3,11 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Camera/CameraComponent.h"
+#include "Components/SceneCaptureComponentCube.h"
+#include "Engine/TextureRenderTargetCube.h"
+#include "Materials/Material.h"
+#include "Engine/PostProcessVolume.h"
+#include "Engine/Texture2D.h"
 
 #include "KuhbrilleManager.generated.h"
 

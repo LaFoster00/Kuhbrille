@@ -3,11 +3,12 @@
 #include "KuhbrilleCamera.h"
 #include "KuhbrilleCameraStyle.h"
 #include "KuhbrilleCameraCommands.h"
-#include "LevelEditor.h"
 #include "Widgets/Docking/SDockTab.h"
 #include "Widgets/Layout/SBox.h"
 #include "Widgets/Text/STextBlock.h"
+#if WITH_EDITOR
 #include "ToolMenus.h"
+#endif
 
 static const FName KuhbrilleCameraTabName("KuhbrilleCamera");
 
@@ -24,26 +25,28 @@ void FKuhbrilleCameraModule::StartupModule()
 	
 	PluginCommands = MakeShareable(new FUICommandList);
 
+#if WITH_EDITOR
 	PluginCommands->MapAction(
 		FKuhbrilleCameraCommands::Get().OpenPluginWindow,
 		FExecuteAction::CreateRaw(this, &FKuhbrilleCameraModule::PluginButtonClicked),
 		FCanExecuteAction());
 
 	UToolMenus::RegisterStartupCallback(FSimpleMulticastDelegate::FDelegate::CreateRaw(this, &FKuhbrilleCameraModule::RegisterMenus));
-	
 	FGlobalTabmanager::Get()->RegisterNomadTabSpawner(KuhbrilleCameraTabName, FOnSpawnTab::CreateRaw(this, &FKuhbrilleCameraModule::OnSpawnPluginTab))
 		.SetDisplayName(LOCTEXT("FKuhbrilleCameraTabTitle", "KuhbrilleCamera"))
 		.SetMenuType(ETabSpawnerMenuType::Hidden);
+#endif
 }
 
 void FKuhbrilleCameraModule::ShutdownModule()
 {
 	// This function may be called during shutdown to clean up your module.  For modules that support dynamic reloading,
 	// we call this function before unloading the module.
-
+#if WITH_EDITOR
 	UToolMenus::UnRegisterStartupCallback(this);
 
 	UToolMenus::UnregisterOwner(this);
+#endif
 
 	FKuhbrilleCameraStyle::Shutdown();
 
@@ -52,6 +55,7 @@ void FKuhbrilleCameraModule::ShutdownModule()
 	FGlobalTabmanager::Get()->UnregisterNomadTabSpawner(KuhbrilleCameraTabName);
 }
 
+#if WITH_EDITOR
 TSharedRef<SDockTab> FKuhbrilleCameraModule::OnSpawnPluginTab(const FSpawnTabArgs& SpawnTabArgs)
 {
 	FText WidgetText = FText::Format(
@@ -103,6 +107,7 @@ void FKuhbrilleCameraModule::RegisterMenus()
 		}
 	}
 }
+#endif
 
 #undef LOCTEXT_NAMESPACE
 	

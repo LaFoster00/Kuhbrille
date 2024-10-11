@@ -37,9 +37,6 @@ public class KuhbrilleCamera : ModuleRules
 			{
 				"Projects",
 				"InputCore",
-				"EditorFramework",
-				"UnrealEd",
-				"ToolMenus",
 				"CoreUObject",
 				"Engine",
 				"Slate",
@@ -47,6 +44,15 @@ public class KuhbrilleCamera : ModuleRules
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);
+
+		if (Target.bBuildEditor){
+			PrivateDependencyModuleNames.AddRange(new string[] 
+			{
+				"EditorFramework",
+				"UnrealEd",
+				"ToolMenus",
+			});
+		}
 		
 		
 		DynamicallyLoadedModuleNames.AddRange(
